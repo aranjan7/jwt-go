@@ -99,6 +99,7 @@ func verifyAud(aud ClaimStrings, cmp string, required bool) bool {
 			return true
 		}
 	}
+	return false
 }
 
 func verifyExp(exp int64, now int64, required bool) bool {
