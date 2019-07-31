@@ -10,7 +10,7 @@ import (
 // This is the default claims type if you don't supply one
 type MapClaims map[string]interface{}
 
-// Compares the aud claim against cmp.
+// VerifyAudience compares the aud claim against cmp.
 // If required is false, this method will return true if the value matches or is unset
 func (m MapClaims) VerifyAudience(cmp string, req bool) bool {
 	aud, ok := m["aud"]
@@ -18,14 +18,12 @@ func (m MapClaims) VerifyAudience(cmp string, req bool) bool {
 		return !req
 	}
 
-	switch v := aud.(type) {
-	case string:
-		return verifyAud(ClaimStrings{v}, cmp, req)
-	case []string:
-		return verifyAud(ClaimStrings(v), cmp, req)
-	default:
+	cs, err := ParseClaimStrings(aud)
+	if err != nil {
 		return false
 	}
+
+	return verifyAud(cs, cmp, req)
 }
 
 // Compares the exp claim against cmp.
